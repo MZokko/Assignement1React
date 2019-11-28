@@ -1,5 +1,15 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, Button, TextInput, ScrollView, FlatList} from 'react-native';
+import {
+   StyleSheet,
+   Text, 
+   View,
+   Button,
+   TextInput,
+   ScrollView,
+   FlatList
+  } from 'react-native';
+
+import TodoItem from './components/TodoItem';
 
 export default function App() {
   const [toDoEntered, setToDoEntered] = useState('');
@@ -11,7 +21,7 @@ export default function App() {
   };
 
   const addButtonHandler = () => {
-    setToDoList(currentTodo => [...toDoList, {id :new Date().getTime(), value:toDoEntered, isDone :false,}]);//list object set other value such as"done bool""
+    setToDoList(currentTodo => [...toDoList, {id :new Date().getTime().toString(), value:toDoEntered, isDone :false,}]);//list object set other value such as"done bool""
     
   };
 
@@ -35,14 +45,8 @@ export default function App() {
       <FlatList
         keyExtractor = {(item, index)=>item.id}
         data={toDoList}
-        renderItem={taskData => (
-          <View >
-            {toDoList.map((task) =>
-              <View style={styles.listTodo}>
-                <Text >{taskData.item.value}</Text>
-              </View>)}
-          </View>
-        )} />
+        renderItem={taskData => <TodoItem title={taskData.item.value}/>}
+      />
 
 
     </View>
@@ -69,13 +73,7 @@ const styles = StyleSheet.create({
     width: 200,
   },
 
-  listTodo: {
-    padding: 10,
-    marginVertical: 10,
-    backgroundColor: '#ccc',
-    borderColor: 'black',
-    borderWidth: 1
-  }
+
 
 
 });
