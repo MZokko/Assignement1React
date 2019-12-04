@@ -8,9 +8,11 @@ import {
   ScrollView,
   FlatList
 } from 'react-native';
+import Firebase from 'firebase';
 
 import TodoItem from './components/TodoItem';
 import TodoInput from './components/TodoInput';
+import SaveBtn from './components/SaveBtn';
 
 export default function App() {
 
@@ -41,10 +43,12 @@ export default function App() {
           data={toDoList}
           renderItem={taskData => <TodoItem title={taskData.item.value} />}
         />
+
       </View>
 
-
-
+      <View style={styles.viewBtnSave}>
+      <SaveBtn/>
+      </View>
 
     </View>
 
@@ -68,5 +72,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.26,
     //android shadow property
     elevation: 5,
+  },
+
+  viewBtnSave:{
+    position:'absolute',
+    bottom:0,
+
   }
 });

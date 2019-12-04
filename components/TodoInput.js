@@ -17,7 +17,9 @@ const TodoInput = props =>{
           style={styles.toDoTextInput}
           value={toDoEntered}
         />
+        {/* strait push to firebase */}
         <Button title="ADD" onPress={props.onAddTodo.bind(this , toDoEntered)} />
+        
       </View>
     );
 };
