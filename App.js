@@ -92,7 +92,10 @@ export default function App() {
     });
   };
 
-  const [outputText, setOutputText] = useState('Open up App.js to start working on your app!');
+  const cancelTodoHandler=()=>{
+    setIsAddMode(false);
+  };
+
 
   return (
     <View style={styles.screen}>
@@ -100,7 +103,7 @@ export default function App() {
       <Button title="Add new Task" onPress={() => setIsAddMode(true)} />
 
 
-      <TodoInput visible={isAddMode} onAddTodo={addButtonHandler} />
+      <TodoInput visible={isAddMode} onAddTodo={addButtonHandler} onCancel={cancelTodoHandler} />
 
 
       <View style={styles.viewList}>

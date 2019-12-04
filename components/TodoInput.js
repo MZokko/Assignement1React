@@ -10,6 +10,12 @@ const TodoInput = props => {
     setToDoEntered(txtEntered);
   };
 
+  const addTodoHandler = ()=>{
+    props.onAddTodo(toDoEntered);
+    setToDoEntered('');
+
+  };
+
   return (
     <Modal visible = {props.visible } animationType="slide"> 
       <View style={styles.viewInput}>
@@ -20,7 +26,8 @@ const TodoInput = props => {
           value={toDoEntered}
         />
 
-        <Button title="ADD" onPress={props.onAddTodo.bind(this, toDoEntered)} />
+        <Button title="ADD" onPress={addTodoHandler} />
+        <Button title="Cancel" color="red" onPress={props.onCancel}/>
 
       </View>
     </Modal>
