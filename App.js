@@ -36,16 +36,17 @@ export default function App() {
 
   const [toDoList, setToDoList] = useState([]);
 
-  const renderItem = () => {
+  const renderItemLoaded = () => {
     let query = firebase.database().ref('TodoList/').orderByKey();
     return query.once('value').then(function (snapshot) {
       snapshot.forEach(function (firebaseTask) {
         const task = new TaskModel();
 
-        task.taskId = firebaseTask.key;
+        task.taskKey = firebaseTask.key;
         task.taskDesc = firebaseTask.val().taskDesc;
-        task.taskComplet = firebaseTask.val().taskComplet;
+        task.taskComplet =Boolean(firebaseTask.val().taskComplet) ;
         console.log(task);
+        setToDoList(task => [...toDoList,{id:task.taskKey,value:task.taskDesc,isDone:task.taskComplet}]);
       });
     });
   };
@@ -65,8 +66,26 @@ export default function App() {
   //   );
 
   const addButtonHandler = todoTitle => {
-    setToDoList(currentTodo => [...toDoList, { id: new Date().getTime().toString(), value: todoTitle, isDone: false, }]);
+    setToDoList(currentTodo => [...toDoList, { id: new Date().getTime().toString(), value: todoTitle, isDone: false }]);
     //list object set other value such as"done bool""
+    //Add firebase
+    firebase.database().ref('TodoList/').push(
+      {
+        taskDesc: todoTitle,
+        taskDone: 'False'
+  
+      }).then(() => {
+        console.log('INSERTED!');
+      }).catch((error) => {
+        console.log(error);
+      }
+      );
+
+  };
+
+  const addToDB = (toDoDesc)=>{
+
+
 
   };
 
@@ -80,7 +99,7 @@ export default function App() {
       </View>
 
 
-      <TodoInput onAddTodo={addButtonHandler} />
+      <TodoInput onAddTodo={addButtonHandler} pushToDB={addToDB}/>
 
 
       <View style={styles.viewList}>
@@ -95,7 +114,7 @@ export default function App() {
       <View style={styles.viewBtnSave}>
         <SaveBtn />
       </View> 
-       {renderItem}
+       <Button  title="try" onPress ={renderItemLoaded}/>
 
     </View>
 
