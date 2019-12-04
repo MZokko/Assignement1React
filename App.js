@@ -8,26 +8,72 @@ import {
   ScrollView,
   FlatList
 } from 'react-native';
-import Firebase from 'firebase';
+
+import { AppLoading } from 'expo';
+import firebase from 'firebase';
 
 import TodoItem from './components/TodoItem';
 import TodoInput from './components/TodoInput';
 import SaveBtn from './components/SaveBtn';
+import TaskModel from './components/TaskModel';
+
+//fire base implementation
+const firebaseConfig = {
+  apiKey: "AIzaSyByrm7nLXnbu0FtCOSmhHdp9XnkEKKNflY",
+  authDomain: "react-to-do-48b30.firebaseapp.com",
+  databaseURL: "https://react-to-do-48b30.firebaseio.com",
+  projectId: "react-to-do-48b30",
+  storageBucket: "react-to-do-48b30.appspot.com",
+  messagingSenderId: "378803227143",
+  appId: "1:378803227143:web:80b5967f83d76c29da78a2"
+};
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
 
 export default function App() {
 
+
+
   const [toDoList, setToDoList] = useState([]);
 
+  const renderItem = () => {
+    let query = firebase.database().ref('TodoList/').orderByKey();
+    return query.once('value').then(function (snapshot) {
+      snapshot.forEach(function (firebaseTask) {
+        const task = new TaskModel();
 
+        task.taskId = firebaseTask.key;
+        task.taskDesc = firebaseTask.val().taskDesc;
+        task.taskComplet = firebaseTask.val().taskComplet;
+        console.log(task);
+      });
+    });
+  };
+
+  //commment to stop querying firebase
+
+  // firebase.database().ref('TodoList/').push(
+  //   {
+  //     taskDesc: 'justy a try000',
+  //     taskDone: 'False'
+
+  //   }).then(() => {
+  //     console.log('INSERTED!');
+  //   }).catch((error) => {
+  //     console.log(error);
+  //   }
+  //   );
 
   const addButtonHandler = todoTitle => {
-    setToDoList(currentTodo => [...toDoList, { id: new Date().getTime().toString(), value: todoTitle, isDone: false, }]);//list object set other value such as"done bool""
+    setToDoList(currentTodo => [...toDoList, { id: new Date().getTime().toString(), value: todoTitle, isDone: false, }]);
+    //list object set other value such as"done bool""
 
   };
 
   const [outputText, setOutputText] = useState('Open up App.js to start working on your app!');
   return (
     <View style={styles.screen}>
+    
       <View>
         <Text>{outputText}</Text>
         <Button title="change text" onPress={() => setOutputText('text changed')} />
@@ -47,8 +93,9 @@ export default function App() {
       </View>
 
       <View style={styles.viewBtnSave}>
-      <SaveBtn/>
-      </View>
+        <SaveBtn />
+      </View> 
+       {renderItem}
 
     </View>
 
@@ -74,9 +121,9 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
 
-  viewBtnSave:{
-    position:'absolute',
-    bottom:0,
+  viewBtnSave: {
+    position: 'absolute',
+    bottom: 0,
 
   }
 });
