@@ -16,6 +16,7 @@ import TodoItem from './components/TodoItem';
 import TodoInput from './components/TodoInput';
 import SaveBtn from './components/SaveBtn';
 import TaskModel from './components/TaskModel';
+import Task from './components/TaskModel';
 
 //fire base implementation
 const firebaseConfig = {
@@ -44,9 +45,9 @@ export default function App() {
 
         task.taskKey = firebaseTask.key;
         task.taskDesc = firebaseTask.val().taskDesc;
-        task.taskComplet =Boolean(firebaseTask.val().taskComplet) ;
+        task.taskComplet = Boolean(firebaseTask.val().taskComplet);
         console.log(task);
-        setToDoList(task => [...toDoList,{id:task.taskKey,value:task.taskDesc,isDone:task.taskComplet}]);
+        setToDoList(task => [...toDoList, { id: task.taskKey, value: task.taskDesc, isDone: task.taskComplet }]);
       });
     });
   };
@@ -73,7 +74,7 @@ export default function App() {
       {
         taskDesc: todoTitle,
         taskDone: 'False'
-  
+
       }).then(() => {
         console.log('INSERTED!');
       }).catch((error) => {
@@ -83,38 +84,39 @@ export default function App() {
 
   };
 
-  const addToDB = (toDoDesc)=>{
-
-
-
+  const removeTaskHandler = taskId => {
+    setToDoList(currentTodo => {
+      return currentTodo.filter((task => task.id !== taskId));
+    });
   };
 
   const [outputText, setOutputText] = useState('Open up App.js to start working on your app!');
+
   return (
     <View style={styles.screen}>
-    
+
       <View>
         <Text>{outputText}</Text>
         <Button title="change text" onPress={() => setOutputText('text changed')} />
       </View>
 
 
-      <TodoInput onAddTodo={addButtonHandler} pushToDB={addToDB}/>
+      <TodoInput onAddTodo={addButtonHandler} />
 
 
       <View style={styles.viewList}>
         <FlatList
           keyExtractor={(item, index) => item.id}
           data={toDoList}
-          renderItem={taskData => <TodoItem title={taskData.item.value} />}
+          renderItem={taskData => <TodoItem id={taskData.item.id} onDelete={removeTaskHandler} title={taskData.item.value} />}
         />
 
       </View>
 
       <View style={styles.viewBtnSave}>
         <SaveBtn />
-      </View> 
-       <Button  title="try" onPress ={renderItemLoaded}/>
+      </View>
+      <Button title="try" onPress={renderItemLoaded} />
 
     </View>
 

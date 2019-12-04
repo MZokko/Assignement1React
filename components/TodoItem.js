@@ -1,11 +1,13 @@
 import React from 'react';
-import{ View, Text, StyleSheet} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
-const TodoItem = props =>{
-    return(
-        <View style={styles.listTodo}>
+const TodoItem = props => {
+    return (
+        <TouchableOpacity onPress={props.onDelete.bind(this, props.id)}>
+            <View style={styles.listTodo}>
                 <Text >{props.title}</Text>
-              </View>
+            </View>
+        </TouchableOpacity>
     );
 };
 
@@ -16,6 +18,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#ccc',
         borderColor: 'black',
         borderWidth: 1
-      }
+    }
 });
 export default TodoItem;
