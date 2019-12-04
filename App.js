@@ -36,6 +36,7 @@ export default function App() {
 
 
   const [toDoList, setToDoList] = useState([]);
+  const [isAddMode, setIsAddMode] = useState(false);
 
   const renderItemLoaded = () => {
     let query = firebase.database().ref('TodoList/').orderByKey();
@@ -81,6 +82,7 @@ export default function App() {
         console.log(error);
       }
       );
+    setIsAddMode(false);
 
   };
 
@@ -95,13 +97,10 @@ export default function App() {
   return (
     <View style={styles.screen}>
 
-      <View>
-        <Text>{outputText}</Text>
-        <Button title="change text" onPress={() => setOutputText('text changed')} />
-      </View>
+      <Button title="Add new Task" onPress={() => setIsAddMode(true)} />
 
 
-      <TodoInput onAddTodo={addButtonHandler} />
+      <TodoInput visible={isAddMode} onAddTodo={addButtonHandler} />
 
 
       <View style={styles.viewList}>

@@ -1,35 +1,37 @@
-import React , { useState } from 'react';
-import { View , TextInput , Button , StyleSheet} from 'react-native';
+import React, { useState } from 'react';
+import { View, TextInput, Button, StyleSheet, Modal } from 'react-native';
 import firebase from 'firebase';
 
-const TodoInput = props =>{
+const TodoInput = props => {
 
-    const [toDoEntered, setToDoEntered] = useState('');
+  const [toDoEntered, setToDoEntered] = useState('');
 
-    const todoInputHandler = (txtEntered) => {
-        setToDoEntered(txtEntered);
-      };
-    
-    return (
-        <View style={styles.viewInput}>
+  const todoInputHandler = (txtEntered) => {
+    setToDoEntered(txtEntered);
+  };
+
+  return (
+    <Modal visible = {props.visible } animationType="slide"> 
+      <View style={styles.viewInput}>
         <TextInput
           onChangeText={todoInputHandler}
           placeholder="To do"
           style={styles.toDoTextInput}
           value={toDoEntered}
         />
-        
-        <Button title="ADD" onPress={props.onAddTodo.bind(this , toDoEntered)} />
-        
+
+        <Button title="ADD" onPress={props.onAddTodo.bind(this, toDoEntered)} />
+
       </View>
-    );
+    </Modal>
+  );
 };
 
 const styles = StyleSheet.create({
 
   viewInput: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flex:1,
+    justifyContent: 'center',
     alignItems: 'center',
   },
 
@@ -37,7 +39,8 @@ const styles = StyleSheet.create({
     borderBottomColor: 'black',
     borderBottomWidth: 1,
     padding: 10,
-    width: 200,
+    width: '80%',
+    marginBottom:10,
   },
 
 });
