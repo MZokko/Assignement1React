@@ -37,7 +37,7 @@ const TodoItem = props => {
 
     }
     return (
-        <TouchableOpacity onPress={props.onDelete.bind(this, id)}>
+        <TouchableOpacity onPress={props.onDelete.bind(this, firebaseId)}>
             <View style={styles.listTodo}>
                 {/* if strikethrough  is true : false*/}
                 <Text style={strikethrough ? styles.textCrossed : styles.textUncrossed}>{taskDesc}</Text>

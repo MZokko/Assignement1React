@@ -120,20 +120,33 @@ export default function App() {
 
   };
 
-  const removeTaskHandler = taskId => {
+  const removeTaskHandler = async taskId => {
 
     //change the state to done is true
 
-    //push fire base
-    //firebase.database().ref('TodoList/').remove().
-    //update of the list
+    //push fire baset
+    try {
+      
+          await firebase.database().ref(`TodoList/${taskId}`).remove();
 
+    } catch (error) {
+      console.log(error)
+      return
+    }
+const updatedList = toDoList.filter(task =>{
+  return task.firebaseId !== taskId
+  
+})
 
-    setToDoList(currentTodo => {
-      // return currentTodo.forEach()
-      console.log(taskId);
-      return currentTodo.filter((task => task.id !== taskId));
-    });
+setToDoList(updatedList)
+
+    // //update of the list
+    // setToDoList(currentTodo => {
+    //   // return currentTodo.forEach()
+    //   console.log(taskId);
+
+    //   return currentTodo.filter((task => task.id !== taskId));
+    // });
   };
 
   const cancelTodoHandler=()=>{
