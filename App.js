@@ -38,17 +38,20 @@ export default function App() {
   const [toDoList, setToDoList] = useState([]);
   const [isAddMode, setIsAddMode] = useState(false);
 
+
+
   const renderItemLoaded = () => {
     let query = firebase.database().ref('TodoList/').orderByKey();
     return query.once('value').then(function (snapshot) {
       snapshot.forEach(function (firebaseTask) {
         const task = new TaskModel();
 
-        task.taskKey = firebaseTask.key;
-        task.taskDesc = firebaseTask.val().taskDesc;
+        task.taskKey = JSON.stringify(firebaseTask.val().key);
+        task.taskDesc = firebaseTask.val().taskDesc ;
         task.taskComplet = Boolean(firebaseTask.val().taskComplet);
         console.log(task);
-        setToDoList(task => [...toDoList, { id: task.taskKey, value: task.taskDesc, isDone: task.taskComplet }]);
+        
+        setToDoList(task => [...toDoList, { id: task.taskKey, value:task.taskDesc, isDone: task.taskComplet }]);
       });
     });
   };
@@ -87,7 +90,14 @@ export default function App() {
   };
 
   const removeTaskHandler = taskId => {
+
+    //change the state to done is true
+
+    //push fire base
+    //firebase.database().ref('TodoList/').remove().
+    //update of the list
     setToDoList(currentTodo => {
+      // return currentTodo.forEach()
       return currentTodo.filter((task => task.id !== taskId));
     });
   };
@@ -116,8 +126,9 @@ export default function App() {
       </View>
 
       <View style={styles.viewBtnSave}>
-        <SaveBtn />
+        {/* <SaveBtn /> */}
       </View>
+
       <Button title="try" onPress={renderItemLoaded} />
 
     </View>
