@@ -18,7 +18,7 @@ import firebase from 'firebase';
 
 
 const TodoItem = props => {
-    const [strikethrough, setStrikethrough] = useState(props.isDone);
+    const [strikethrough, setStrikethrough] = useState(props.item.taskDone);
     let { id, taskDesc, taskDone, firebaseId } = props.item;
     //     console.log(' >>>>>>>>>>>>>')
     // console.log(props.item)
@@ -41,7 +41,8 @@ const TodoItem = props => {
             <View style={styles.listTodo}>
                 {/* if strikethrough  is true : false*/}
                 <Text style={strikethrough ? styles.textCrossed : styles.textUncrossed}>{taskDesc}</Text>
-                <Button title="D" onPress={() => handleUpdate()} />
+                
+                <Button title={strikethrough?'Undone':'Done'} onPress={() => handleUpdate()} />
             </View >
         </TouchableOpacity>
     );

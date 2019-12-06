@@ -101,21 +101,36 @@ export default function App() {
   //   }
   //   );
 
-  const addButtonHandler = todoTitle => {
-    setToDoList(currentTodo => [...toDoList, { id: new Date().getTime().toString(), value: todoTitle, isDone: false }]);
+  const addButtonHandler = async todoTitle => {
+   const newTask= {
+      taskDesc: todoTitle,
+      taskDone: false,
+      id: +new Date()
+    };
+try {
+  await firebase.database().ref('TodoList/').push(newTask);
+} catch (error) {
+  console.log(error);
+  return
+}
 
+//deep clone object or array or whatever
+const cloneList = JSON.parse(JSON.stringify(toDoList))  
+cloneList.push(newTask)
+setToDoList(cloneList)
     //Add firebase
-    firebase.database().ref('TodoList/').push(
-      {
-        taskDesc: todoTitle,
-        taskDone: false,
-        id: +new Date()
-      }).then(() => {
-        console.log('INSERTED!');
-      }).catch((error) => {
-        console.log(error);
-      }
-      );
+    // firebase.database().ref('TodoList/').push(
+    //   {
+    //     taskDesc: todoTitle,
+    //     taskDone: false,
+    //     id: +new Date()
+    //   }).then(() => {
+    //     console.log('INSERTED!');
+    //   }).catch((error) => {
+    //     console.log(error);
+    //   }
+    //   );
+    //   setToDoList(currentTodo => [...toDoList, { id: new Date().getTime().toString(), value: todoTitle, isDone: false }]);
     setIsAddMode(false);
 
   };
@@ -135,7 +150,6 @@ export default function App() {
     }
 const updatedList = toDoList.filter(task =>{
   return task.firebaseId !== taskId
-  
 })
 
 setToDoList(updatedList)
@@ -175,7 +189,8 @@ setToDoList(updatedList)
         {/* <SaveBtn /> */}
       </View>
 
-      <Button title="try" onPress={renderItemLoaded} />
+      {/* <Button title="Reload" onPress={renderItemLoaded} /> */}
+      <Button title={toDoList.length ? 'Refresh':'Load'} onPress={renderItemLoaded} />
 
     </View>
 
