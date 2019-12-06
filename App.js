@@ -43,16 +43,23 @@ export default function App() {
   const renderItemLoaded = () => {
     let query = firebase.database().ref('TodoList/').orderByKey();
     return query.once('value').then(function (snapshot) {
-      snapshot.forEach(function (firebaseTask) {
-        const task = new TaskModel();
+      // console.log(JSON.stringify(snapshot))
+      //
+      let list = snapshot.val()      
+      setToDoList(Object.keys(list).map(key => ({...list[key], firebaseId: key})))
 
-        task.taskKey = JSON.stringify(firebaseTask.val().key);
-        task.taskDesc = firebaseTask.val().taskDesc ;
-        task.taskComplet = Boolean(firebaseTask.val().taskComplet);
-        console.log(task);
+      // snapshot.forEach(function (firebaseTask) {
+      //   const task = new TaskModel();
+      //   // console.log(typeof firebaseTask);
+      //   // task.taskKey = JSON.stringify(firebaseTask.val().key);
+      //   // task.taskDesc = firebaseTask.val().taskDesc ;
+      //   // task.taskComplet = Boolean(firebaseTask.val().taskComplet);
+      //   // task.id = firebaseTask.val().id
+       
         
-        setToDoList(task => [...toDoList, { id: task.taskKey, value:task.taskDesc, isDone: task.taskComplet }]);
-      });
+      //   // setToDoList(task => [...toDoList, { id: task['taskKey'], value:task['taskDesc'], isDone: task['taskComplet'] }]);
+      //   setToDoList([...toDoList, { id: task['id'], value:task['taskDesc'], isDone: task['taskComplet'] }])
+      // });
     });
   };
 
@@ -72,13 +79,13 @@ export default function App() {
 
   const addButtonHandler = todoTitle => {
     setToDoList(currentTodo => [...toDoList, { id: new Date().getTime().toString(), value: todoTitle, isDone: false }]);
-    //list object set other value such as"done bool""
+
     //Add firebase
     firebase.database().ref('TodoList/').push(
       {
         taskDesc: todoTitle,
-        taskDone: 'False'
-
+        taskDone: false,
+        id: +new Date()
       }).then(() => {
         console.log('INSERTED!');
       }).catch((error) => {
@@ -96,8 +103,11 @@ export default function App() {
     //push fire base
     //firebase.database().ref('TodoList/').remove().
     //update of the list
+
+
     setToDoList(currentTodo => {
       // return currentTodo.forEach()
+      console.log(taskId);
       return currentTodo.filter((task => task.id !== taskId));
     });
   };
@@ -118,9 +128,9 @@ export default function App() {
 
       <View style={styles.viewList}>
         <FlatList
-          keyExtractor={(item, index) => item.id}
+          // keyExtractor={(item, index) => item.id}
           data={toDoList}
-          renderItem={taskData => <TodoItem id={taskData.item.id} onDelete={removeTaskHandler} title={taskData.item.value} />}
+          renderItem={(taskData, idx) => <TodoItem key={idx} item={taskData.item}  onDelete={removeTaskHandler} />}
         />
 
       </View>

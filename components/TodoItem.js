@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Button } from 'react-native';
 import firebase from 'firebase';
 
@@ -18,17 +18,43 @@ import firebase from 'firebase';
 
 
 const TodoItem = props => {
+    const [strikethrough, setStrikethrough] = useState(props.isDone)
+    let {id, taskDesc, taskDone, firebaseId} = props.item
+//     console.log(' >>>>>>>>>>>>>')
+// console.log(props.item)
+    const handleUpdate = async () => {
+        //firebase update func
+        let task = firebase.database().ref(`TodoList/${firebaseId}`)
+        try {
+            await task.child('taskDone').set(!strikethrough)
+            setStrikethrough(!strikethrough)
+        } catch(e) {
+            console.log(e)
+            return
+        }
+        
+    }
     return (
-        <TouchableOpacity onPress={props.onDelete.bind(this, props.id)}>
+        <TouchableOpacity onPress={props.onDelete.bind(this, id)}>
             <View style={styles.listTodo}>
-                <Text >{props.title}</Text>
-                 {/* <Button title="Done" /> */}
+                <Text style={strikethrough ? styles.textCrossed: styles.textUncrossed}>{taskDesc}</Text>
+                 <Button title="D" onPress={()=> handleUpdate()}/>
             </View >
         </TouchableOpacity>
     );
 };
 
 const styles = StyleSheet.create({
+    btnItem:{
+        marginRight:0,
+    },
+
+    textCrossed: {
+        textDecorationLine: 'line-through'
+    },
+    textUncrossed : {
+        textDecorationLine: 'none'
+    },
 
     listTodo: {
         padding: 10,
@@ -36,7 +62,11 @@ const styles = StyleSheet.create({
         backgroundColor: '#ccc',
         borderColor: 'black',
         borderWidth: 1,
-        flexDirection: 'row'
+        flexDirection: 'row',
+        justifyContent:'space-between',
+        alignContent:'space-between',
+        flex:1,
+        
     }
 });
 export default TodoItem;
