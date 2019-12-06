@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Button } from 'react-native';
 import firebase from 'firebase';
 
@@ -18,41 +18,44 @@ import firebase from 'firebase';
 
 
 const TodoItem = props => {
-    const [strikethrough, setStrikethrough] = useState(props.isDone)
-    let {id, taskDesc, taskDone, firebaseId} = props.item
-//     console.log(' >>>>>>>>>>>>>')
-// console.log(props.item)
+    const [strikethrough, setStrikethrough] = useState(props.isDone);
+    let { id, taskDesc, taskDone, firebaseId } = props.item;
+    //     console.log(' >>>>>>>>>>>>>')
+    // console.log(props.item)
     const handleUpdate = async () => {
         //firebase update func
-        let task = firebase.database().ref(`TodoList/${firebaseId}`)
+
+        // dynamic path for the db
+        let task = firebase.database().ref(`TodoList/${firebaseId}`);//`` allow to insert variable without the ++  > ${nameVar}
         try {
-            await task.child('taskDone').set(!strikethrough)
-            setStrikethrough(!strikethrough)
-        } catch(e) {
-            console.log(e)
-            return
+            await task.child('taskDone').set(!strikethrough);//await must be in try catch
+            setStrikethrough(!strikethrough);
+        } catch (e) {
+            console.log(e);
+            return;
         }
-        
+
     }
     return (
         <TouchableOpacity onPress={props.onDelete.bind(this, id)}>
             <View style={styles.listTodo}>
-                <Text style={strikethrough ? styles.textCrossed: styles.textUncrossed}>{taskDesc}</Text>
-                 <Button title="D" onPress={()=> handleUpdate()}/>
+                {/* if strikethrough  is true : false*/}
+                <Text style={strikethrough ? styles.textCrossed : styles.textUncrossed}>{taskDesc}</Text>
+                <Button title="D" onPress={() => handleUpdate()} />
             </View >
         </TouchableOpacity>
     );
 };
 
 const styles = StyleSheet.create({
-    btnItem:{
-        marginRight:0,
+    btnItem: {
+        marginRight: 0,
     },
 
     textCrossed: {
         textDecorationLine: 'line-through'
     },
-    textUncrossed : {
+    textUncrossed: {
         textDecorationLine: 'none'
     },
 
@@ -63,10 +66,10 @@ const styles = StyleSheet.create({
         borderColor: 'black',
         borderWidth: 1,
         flexDirection: 'row',
-        justifyContent:'space-between',
-        alignContent:'space-between',
-        flex:1,
-        
+        justifyContent: 'space-between',
+        alignContent: 'space-between',
+        flex: 1,
+
     }
 });
 export default TodoItem;

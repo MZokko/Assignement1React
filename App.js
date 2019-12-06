@@ -44,8 +44,32 @@ export default function App() {
     let query = firebase.database().ref('TodoList/').orderByKey();
     return query.once('value').then(function (snapshot) {
       // console.log(JSON.stringify(snapshot))
-      //
-      let list = snapshot.val()      
+      //snapshot instance of my all data db
+      let list = snapshot.val() 
+
+      // Object.keys(list).map(key => {
+      //   return {
+      //     ...list[key],
+      //     firebaseId: key
+      //   }
+      // })
+
+      // todolst(namedb){
+      //   'alex': {
+      //     name: 'asd'
+      //   },
+      //   'jon': {
+      //     name: 'asd'
+      //   }
+      // }
+      // ['alex','jon']
+
+
+
+    
+
+
+      //setting an array of weird firedb keys
       setToDoList(Object.keys(list).map(key => ({...list[key], firebaseId: key})))
 
       // snapshot.forEach(function (firebaseTask) {
@@ -63,7 +87,7 @@ export default function App() {
     });
   };
 
-  //commment to stop querying firebase
+  //push model  firedb
 
   // firebase.database().ref('TodoList/').push(
   //   {
@@ -128,7 +152,6 @@ export default function App() {
 
       <View style={styles.viewList}>
         <FlatList
-          // keyExtractor={(item, index) => item.id}
           data={toDoList}
           renderItem={(taskData, idx) => <TodoItem key={idx} item={taskData.item}  onDelete={removeTaskHandler} />}
         />
